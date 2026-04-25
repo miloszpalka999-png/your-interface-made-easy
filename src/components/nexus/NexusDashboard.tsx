@@ -1,4 +1,4 @@
-import neuralCore from "@/assets/neural-core.jpg";
+import { LivingOrb } from "./LivingOrb";
 import { Panel, PanelHeader } from "./Panel";
 import { ProgressBar } from "./ProgressBar";
 import { Sparkline } from "./Sparkline";
@@ -288,17 +288,10 @@ export function NexusDashboard() {
 
           {/* Neural visualization with floating agents */}
           <div className="relative mt-4 flex-1 min-h-[460px]">
-            {/* Core image */}
+            {/* Living core */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative h-full w-full max-h-[560px] max-w-[720px]">
-                <img
-                  src={neuralCore}
-                  alt="Neural network core"
-                  width={1536}
-                  height={1280}
-                  className="h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none"
-                />
-                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,var(--neon-violet)/0.25,transparent_60%)]" />
+              <div className="relative h-full w-full max-h-[600px] max-w-[760px]">
+                <LivingOrb className="h-full w-full" />
               </div>
             </div>
 
