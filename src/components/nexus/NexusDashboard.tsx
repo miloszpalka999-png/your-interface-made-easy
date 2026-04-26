@@ -171,13 +171,13 @@ export function NexusDashboard() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden font-display text-foreground">
+    <div className="relative h-screen overflow-hidden font-display text-foreground">
       <div className="aurora absolute inset-0" />
       <div className="ring-grid absolute inset-0 opacity-[0.45]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.75)_100%)]" />
       {/* floating particles */}
       <div className="pointer-events-none absolute inset-0">
-        {Array.from({ length: 22 }).map((_, i) => {
+        {Array.from({ length: 18 }).map((_, i) => {
           const top = (i * 53) % 100;
           const left = (i * 37) % 100;
           const size = 2 + (i % 3);
@@ -201,9 +201,9 @@ export function NexusDashboard() {
         })}
       </div>
 
-      <div className="relative z-10 mx-auto grid min-h-screen max-w-[1600px] grid-cols-12 gap-4 p-4 lg:p-6">
+      <div className="relative z-10 mx-auto grid h-screen max-w-[1600px] grid-cols-12 gap-3 p-3 lg:p-4">
         {/* LEFT COLUMN */}
-        <aside className="col-span-12 flex flex-col gap-4 lg:col-span-3 xl:col-span-2">
+        <aside className="col-span-12 flex flex-col gap-3 overflow-y-auto lg:col-span-3 xl:col-span-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Brand */}
           <div className="flex items-center gap-3 px-2 pt-2">
             <div className="relative flex h-10 w-10 items-center justify-center">
