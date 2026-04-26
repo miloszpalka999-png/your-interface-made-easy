@@ -654,7 +654,7 @@ export function NexusDashboard() {
         </main>
 
         {/* RIGHT COLUMN */}
-        <aside className="col-span-12 flex flex-col gap-4 lg:col-span-3">
+        <aside className="col-span-12 flex flex-col gap-3 overflow-y-auto lg:col-span-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* System overview */}
           <Panel>
             <PanelHeader
