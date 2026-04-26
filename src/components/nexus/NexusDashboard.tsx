@@ -315,29 +315,47 @@ export function NexusDashboard() {
         </aside>
 
         {/* CENTER COLUMN */}
-        <main className="relative col-span-12 flex flex-col lg:col-span-6 xl:col-span-7">
+        <main className="relative col-span-12 flex min-h-0 flex-col lg:col-span-6 xl:col-span-7">
           {/* Top bar — listening + agent */}
-          <div className="flex items-start justify-between gap-4 px-2">
+          <div className="flex items-start justify-between gap-3 px-2">
             <div className="flex-1" />
-            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Listening...
+            <button
+              type="button"
+              onClick={() => setVoiceActive((v) => !v)}
+              aria-pressed={voiceActive}
+              className={`hidden md:flex items-center gap-2 rounded-full border px-4 py-1.5 backdrop-blur transition ${
+                voiceActive
+                  ? "border-[var(--neon-pink)]/60 bg-[var(--neon-pink)]/10 shadow-[0_0_20px_oklch(0.75_0.25_340/0.4)]"
+                  : "border-white/10 bg-white/[0.04] hover:border-[var(--neon-violet)]/40"
+              }`}
+            >
+              <Mic
+                className={`h-3 w-3 ${voiceActive ? "text-[var(--neon-pink)]" : "text-muted-foreground"}`}
+              />
+              <span
+                className={`font-mono text-[10px] uppercase tracking-[0.2em] ${
+                  voiceActive ? "text-[var(--neon-pink)]" : "text-muted-foreground"
+                }`}
+              >
+                {voiceActive ? "Listening" : "Voice off"}
               </span>
               <div className="flex h-4 items-center gap-[2px]">
                 {[3, 6, 4, 8, 5, 7, 4, 9, 6, 5, 7, 4].map((h, i) => (
                   <div
                     key={i}
-                    className="w-[2px] rounded-full bg-[var(--neon-violet)]"
+                    className="w-[2px] rounded-full"
                     style={{
-                      height: `${h * 1.5}px`,
-                      animation: `bar-pulse 1.${i}s ease-in-out infinite`,
-                      boxShadow: "0 0 4px var(--neon-violet)",
+                      height: `${(voiceActive ? h : 2) * 1.5}px`,
+                      background: voiceActive ? "var(--neon-pink)" : "oklch(0.5 0.05 280)",
+                      animation: voiceActive ? `bar-pulse 0.${4 + (i % 5)}s ease-in-out infinite` : "none",
+                      boxShadow: voiceActive ? "0 0 4px var(--neon-pink)" : "none",
+                      transition: "height .4s ease",
                     }}
                   />
                 ))}
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
+            </button>
+            <div className="hidden md:flex items-center gap-2">
               <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)]" />
                 <div className="leading-tight">
@@ -352,24 +370,24 @@ export function NexusDashboard() {
           </div>
 
           {/* Greeting */}
-          <div className="mt-4 px-2 animate-rise">
-            <h1 className="font-display text-4xl font-light tracking-tight md:text-5xl xl:text-6xl neon-text">
+          <div className="mt-3 px-2 animate-rise">
+            <h1 className="font-display text-3xl font-light leading-tight tracking-tight md:text-4xl xl:text-5xl neon-text">
               Good Morning, <span className="text-gradient-brand font-medium">Creator</span>
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground md:text-base text-shimmer inline-block">
+            <p className="mt-1 text-xs text-muted-foreground md:text-sm text-shimmer inline-block">
               What shall we build today?
             </p>
           </div>
 
           {/* Quick actions */}
-          <div className="mt-5 flex flex-wrap gap-3 px-2">
+          <div className="mt-3 flex flex-wrap gap-2 px-2">
             <QuickAction icon={Sparkles} title="Smart Plan" sub="AI will build your plan" delay={100} />
             <QuickAction icon={Brain} title="Deep Research" sub="Get expert insights" delay={200} />
             <QuickAction icon={Lightbulb} title="Create Anything" sub="Bring ideas to life" delay={300} />
           </div>
 
           {/* Neural visualization with floating agents */}
-          <div className="relative mt-4 flex-1 min-h-[460px]">
+          <div className="relative mt-2 flex-1 min-h-0">
             {/* Concentric expanding rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               {[0, 1, 2].map((i) => (
