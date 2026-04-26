@@ -117,8 +117,34 @@ const sessionSpark = [30, 42, 35, 50, 44, 58, 52, 64, 58, 70, 64, 78, 72, 84, 78
 export function NexusDashboard() {
   return (
     <div className="relative min-h-screen overflow-hidden font-display text-foreground">
-      <div className="ring-grid absolute inset-0 opacity-[0.35]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.7)_100%)]" />
+      <div className="aurora absolute inset-0" />
+      <div className="ring-grid absolute inset-0 opacity-[0.45]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.75)_100%)]" />
+      {/* floating particles */}
+      <div className="pointer-events-none absolute inset-0">
+        {Array.from({ length: 22 }).map((_, i) => {
+          const top = (i * 53) % 100;
+          const left = (i * 37) % 100;
+          const size = 2 + (i % 3);
+          const dur = 8 + (i % 7);
+          return (
+            <span
+              key={i}
+              className="absolute rounded-full bg-[var(--neon-violet)] animate-float"
+              style={{
+                top: `${top}%`,
+                left: `${left}%`,
+                width: size,
+                height: size,
+                opacity: 0.25 + ((i % 5) / 10),
+                boxShadow: `0 0 ${4 + size * 2}px var(--neon-violet)`,
+                animationDuration: `${dur}s`,
+                animationDelay: `${i * 0.3}s`,
+              }}
+            />
+          );
+        })}
+      </div>
 
       <div className="relative z-10 mx-auto grid min-h-screen max-w-[1600px] grid-cols-12 gap-4 p-4 lg:p-6">
         {/* LEFT COLUMN */}
