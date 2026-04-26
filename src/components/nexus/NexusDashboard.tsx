@@ -1,6 +1,7 @@
 import { useState } from "react";
 import neuralCore from "@/assets/neural-core.jpg";
 import { Panel, PanelHeader } from "./Panel";
+import { SystemMetrics } from "./SystemMetrics";
 import { ProgressBar } from "./ProgressBar";
 import { Sparkline } from "./Sparkline";
 import {
