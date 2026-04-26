@@ -196,7 +196,7 @@ function MemoryGrid({ used, total }: { used: number; total: number }) {
       <div className="flex items-end justify-between">
         <div>
           <div className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
-            Memory Allocation
+            Alokacja Pamięci
           </div>
           <div className="font-mono text-sm tabular-nums">
             <span className="text-[var(--neon-violet)] font-semibold">{used.toFixed(1)}</span>
@@ -234,8 +234,8 @@ function MemoryGrid({ used, total }: { used: number; total: number }) {
 function StorageRing({ used, total }: { used: number; total: number }) {
   const segments = [
     { label: "System", value: 42, color: "var(--neon-violet)" },
-    { label: "Apps", value: 78, color: "var(--neon-blue)" },
-    { label: "Data", value: 62, color: "var(--neon-cyan)" },
+    { label: "Aplikacje", value: 78, color: "var(--neon-blue)" },
+    { label: "Dane", value: 62, color: "var(--neon-cyan)" },
   ];
   const totalUsed = segments.reduce((s, x) => s + x.value, 0);
   const r = 26;
@@ -271,7 +271,7 @@ function StorageRing({ used, total }: { used: number; total: number }) {
       <div className="flex-1">
         <div className="flex items-baseline justify-between">
           <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
-            Storage
+Dysk
           </span>
           <span className="font-mono text-xs tabular-nums">
             <span className="text-foreground font-semibold">{totalUsed}</span>
@@ -314,7 +314,7 @@ function NetworkBars({ down, up }: { down: number[]; up: number[] }) {
             ↑ {up[up.length - 1]}<span className="text-muted-foreground/70 ml-0.5">Mb/s</span>
           </span>
         </div>
-        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Throughput</span>
+        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Przepustowość</span>
       </div>
       <div className="flex h-[56px] items-end gap-[3px]" style={{ height }}>
         {down.map((d, i) => {
@@ -429,12 +429,12 @@ export function SystemMetrics() {
           <div className="flex items-center gap-2">
             <Cpu className="h-3 w-3 text-[var(--neon-violet)]" />
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Compute Load
+              Obciążenie obliczeń
             </span>
           </div>
           <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[var(--neon-green)]">
             <span className="h-1 w-1 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)] animate-pulse-glow" />
-            Live
+            Na żywo
           </span>
         </div>
         <AreaChart cpu={cpuSeries} gpu={gpuSeries} />
@@ -451,7 +451,7 @@ export function SystemMetrics() {
       <div className="flex items-center gap-2">
         <HardDrive className="h-3 w-3 text-[var(--neon-cyan)]" />
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          Disk Partitions
+          Partycje dysku
         </span>
       </div>
       <StorageRing used={182} total={512} />
@@ -463,7 +463,7 @@ export function SystemMetrics() {
         <div className="mb-2 flex items-center gap-2">
           <NetworkIcon className="h-3 w-3 text-[var(--neon-green)]" />
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            Network I/O
+            Sieć (we/wy)
           </span>
         </div>
         <NetworkBars down={downSeries} up={upSeries} />
