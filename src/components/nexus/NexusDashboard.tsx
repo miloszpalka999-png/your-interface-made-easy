@@ -43,11 +43,11 @@ type ModuleItem = {
 };
 
 const modules: ModuleItem[] = [
-  { icon: Search, label: "RESEARCH", status: "Active" },
-  { icon: Code2, label: "CODE", status: "Active" },
-  { icon: PenLine, label: "WRITE", status: "Active" },
-  { icon: BarChart3, label: "ANALYZE", status: "Active" },
-  { icon: Workflow, label: "AUTOMATE", status: "Active" },
+  { icon: Search, label: "BADANIA", status: "Active" },
+  { icon: Code2, label: "KOD", status: "Active" },
+  { icon: PenLine, label: "PISANIE", status: "Active" },
+  { icon: BarChart3, label: "ANALIZA", status: "Active" },
+  { icon: Workflow, label: "AUTOMATYZACJA", status: "Active" },
 ];
 
 type AgentCard = {
@@ -69,8 +69,8 @@ const agents: AgentCard[] = [
   {
     id: "researcher",
     icon: Search,
-    name: "Researcher",
-    task: "Analyzing market trends",
+    name: "Badacz",
+    task: "Analizuje trendy rynkowe",
     progress: 87,
     color: "var(--neon-violet)",
     position: "top-[12%] left-[6%]",
@@ -78,13 +78,13 @@ const agents: AgentCard[] = [
     uptime: "01:42:18",
     cpu: 34,
     memory: "1.2 GB",
-    lastAction: "Indexed 248 sources",
+    lastAction: "Zindeksowano 248 źródeł",
   },
   {
     id: "analyst",
     icon: PieChart,
-    name: "Analyst",
-    task: "Processing data",
+    name: "Analityk",
+    task: "Przetwarza dane",
     progress: 91,
     color: "var(--neon-blue)",
     position: "top-[14%] right-[6%]",
@@ -92,13 +92,13 @@ const agents: AgentCard[] = [
     uptime: "02:08:55",
     cpu: 51,
     memory: "2.4 GB",
-    lastAction: "Computed 12 metrics",
+    lastAction: "Obliczono 12 metryk",
   },
   {
     id: "coder",
     icon: Code2,
-    name: "Coder",
-    task: "Refactoring codebase",
+    name: "Programista",
+    task: "Refaktoryzuje kod",
     progress: 62,
     color: "var(--neon-cyan)",
     position: "top-[42%] left-[2%]",
@@ -106,13 +106,13 @@ const agents: AgentCard[] = [
     uptime: "00:54:03",
     cpu: 22,
     memory: "0.9 GB",
-    lastAction: "Edited 8 files",
+    lastAction: "Zmieniono 8 plików",
   },
   {
     id: "designer",
     icon: Palette,
-    name: "Designer",
-    task: "Generating visuals",
+    name: "Projektant",
+    task: "Generuje grafiki",
     progress: 78,
     color: "var(--neon-pink)",
     position: "top-[44%] right-[2%]",
@@ -120,13 +120,13 @@ const agents: AgentCard[] = [
     uptime: "01:11:42",
     cpu: 47,
     memory: "1.8 GB",
-    lastAction: "Rendered 5 frames",
+    lastAction: "Wyrenderowano 5 klatek",
   },
   {
     id: "writer",
     icon: PenLine,
-    name: "Writer",
-    task: "Crafting content",
+    name: "Pisarz",
+    task: "Tworzy treści",
     progress: 43,
     color: "var(--neon-blue)",
     position: "bottom-[18%] left-[8%]",
@@ -134,13 +134,13 @@ const agents: AgentCard[] = [
     uptime: "00:23:11",
     cpu: 18,
     memory: "0.6 GB",
-    lastAction: "Drafted 3 sections",
+    lastAction: "Naszkicowano 3 sekcje",
   },
   {
     id: "automator",
     icon: Bot,
-    name: "Automator",
-    task: "Running workflows",
+    name: "Automatyk",
+    task: "Uruchamia procesy",
     progress: 64,
     color: "var(--neon-amber)",
     position: "bottom-[10%] right-[8%]",
@@ -148,7 +148,7 @@ const agents: AgentCard[] = [
     uptime: "03:31:09",
     cpu: 29,
     memory: "1.1 GB",
-    lastAction: "Triggered 14 hooks",
+    lastAction: "Wywołano 14 hooków",
   },
 ];
 
@@ -241,7 +241,7 @@ export function NexusDashboard() {
                     </span>
                     <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[var(--neon-green)]">
                       <span className="h-1 w-1 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)]" />
-                      {m.status}
+                      {m.status === "Active" ? "Aktywny" : "Bezczynny"}
                     </span>
                   </button>
                 );
@@ -250,7 +250,7 @@ export function NexusDashboard() {
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/5">
                   <Plus className="h-3.5 w-3.5" />
                 </div>
-                <span className="font-mono text-[11px] tracking-[0.15em]">Add module</span>
+                <span className="font-mono text-[11px] tracking-[0.15em]">Dodaj moduł</span>
               </button>
             </div>
           </Panel>
