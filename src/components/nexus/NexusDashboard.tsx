@@ -259,7 +259,7 @@ export function NexusDashboard() {
           <Panel>
             <PanelHeader
               icon={<Waves className="h-3 w-3 text-[var(--neon-blue)]" />}
-              title="Memory Stream"
+              title="Strumień Pamięci"
             />
             <div className="flex h-12 items-end gap-[3px]">
               {memorySpark.map((v, i) => (
@@ -276,7 +276,7 @@ export function NexusDashboard() {
               ))}
             </div>
             <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-muted-foreground">
-              <span>Long-term memory</span>
+              <span>Pamięć długoterminowa</span>
               <span className="text-foreground">7.2 TB / 10 TB</span>
             </div>
             <ProgressBar value={72} className="mt-2" />
@@ -286,15 +286,15 @@ export function NexusDashboard() {
           <Panel>
             <PanelHeader
               icon={<Focus className="h-3 w-3 text-[var(--neon-cyan)]" />}
-              title="Focus"
+              title="Skupienie"
             />
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-sm bg-[var(--neon-cyan)] shadow-[0_0_6px_var(--neon-cyan)]" />
-                  <span className="text-sm font-medium">Deep Work</span>
+                  <span className="text-sm font-medium">Głęboka praca</span>
                 </div>
-                <div className="mt-1 font-mono text-[10px] text-muted-foreground">Flow State</div>
+                <div className="mt-1 font-mono text-[10px] text-muted-foreground">Stan przepływu</div>
               </div>
               <RingProgress value={92} />
             </div>
@@ -337,7 +337,7 @@ export function NexusDashboard() {
                   voiceActive ? "text-[var(--neon-pink)]" : "text-muted-foreground"
                 }`}
               >
-                {voiceActive ? "Listening" : "Voice off"}
+                {voiceActive ? "Słucham" : "Głos wył."}
               </span>
               <div className="flex h-4 items-center gap-[2px]">
                 {[3, 6, 4, 8, 5, 7, 4, 9, 6, 5, 7, 4].map((h, i) => (
@@ -359,7 +359,7 @@ export function NexusDashboard() {
               <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)]" />
                 <div className="leading-tight">
-                  <div className="text-xs font-medium">Local AI Agent</div>
+                  <div className="text-xs font-medium">Lokalny Agent AI</div>
                   <div className="font-mono text-[9px] text-muted-foreground">Online</div>
                 </div>
               </div>
@@ -372,18 +372,18 @@ export function NexusDashboard() {
           {/* Greeting */}
           <div className="mt-3 px-2 animate-rise">
             <h1 className="font-display text-3xl font-light leading-tight tracking-tight md:text-4xl xl:text-5xl neon-text">
-              Good Morning, <span className="text-gradient-brand font-medium">Creator</span>
+              Dzień dobry, <span className="text-gradient-brand font-medium">Twórco</span>
             </h1>
             <p className="mt-1 text-xs text-muted-foreground md:text-sm text-shimmer inline-block">
-              What shall we build today?
+              Co dziś tworzymy?
             </p>
           </div>
 
           {/* Quick actions */}
           <div className="mt-3 flex flex-wrap gap-2 px-2">
-            <QuickAction icon={Sparkles} title="Smart Plan" sub="AI will build your plan" delay={100} />
-            <QuickAction icon={Brain} title="Deep Research" sub="Get expert insights" delay={200} />
-            <QuickAction icon={Lightbulb} title="Create Anything" sub="Bring ideas to life" delay={300} />
+            <QuickAction icon={Sparkles} title="Inteligentny Plan" sub="AI ułoży plan działania" delay={100} />
+            <QuickAction icon={Brain} title="Głęboka Analiza" sub="Eksperckie spostrzeżenia" delay={200} />
+            <QuickAction icon={Lightbulb} title="Stwórz Cokolwiek" sub="Ożyw swoje pomysły" delay={300} />
           </div>
 
           {/* Neural visualization with floating agents */}
@@ -469,7 +469,7 @@ export function NexusDashboard() {
               <button
                 type="button"
                 onClick={cycleAgent}
-                aria-label={`Cycle active agent. Current: ${activeAgent.name}`}
+                aria-label={`Przełącz aktywnego agenta. Obecnie: ${activeAgent.name}`}
                 className="group relative h-full w-full max-h-[520px] max-w-[680px] cursor-pointer focus:outline-none"
                 style={{ ["--core-color" as string]: voiceActive ? "var(--neon-pink)" : activeAgent.color }}
               >
@@ -483,7 +483,7 @@ export function NexusDashboard() {
                 />
                 <img
                   src={neuralCore}
-                  alt="Neural network core"
+                  alt="Rdzeń sieci neuronowej"
                   width={1536}
                   height={1280}
                   className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-all duration-500 group-hover:scale-[1.03]"
@@ -510,7 +510,7 @@ export function NexusDashboard() {
                         style={{ background: activeAgent.color, boxShadow: `0 0 10px ${activeAgent.color}` }}
                       />
                       <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
-                        Active Agent
+                        Aktywny Agent
                       </span>
                     </div>
                     <div className="mt-1.5 flex items-baseline justify-between">
@@ -518,14 +518,14 @@ export function NexusDashboard() {
                         {activeAgent.name}
                       </div>
                       <span className="font-mono text-[10px] uppercase tracking-wider" style={{ color: activeAgent.color }}>
-                        {activeAgent.status}
+                        {activeAgent.status === "Running" ? "Pracuje" : activeAgent.status === "Thinking" ? "Myśli" : "Bezczynny"}
                       </span>
                     </div>
                     <div className="mt-1 truncate text-[11px] text-muted-foreground">{activeAgent.task}</div>
                     <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[9px]">
-                      <Stat label="UPTIME" value={activeAgent.uptime} />
+                      <Stat label="CZAS" value={activeAgent.uptime} />
                       <Stat label="CPU" value={`${activeAgent.cpu}%`} />
-                      <Stat label="MEM" value={activeAgent.memory} />
+                      <Stat label="PAMIĘĆ" value={activeAgent.memory} />
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       <ProgressBar value={activeAgent.progress} color={activeAgent.color} />
@@ -538,7 +538,7 @@ export function NexusDashboard() {
                     </div>
                   </div>
                   <div className="mt-2 text-center font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/70">
-                    Click core to cycle ↻
+                    Kliknij rdzeń, aby zmienić ↻
                   </div>
                 </div>
 
@@ -624,11 +624,11 @@ export function NexusDashboard() {
                 <span className="h-2 w-2 rounded-full bg-[var(--neon-violet)] shadow-[0_0_10px_var(--neon-violet)] animate-pulse-glow" />
                 <input
                   className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/70 focus:outline-none"
-                  placeholder="Ask anything or give a command..."
+                  placeholder="Zapytaj o cokolwiek lub wydaj polecenie..."
                 />
                 <span className="hidden md:flex items-center gap-1.5 font-mono text-[10px] text-[var(--neon-green)]">
                   <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-green)] shadow-[0_0_8px_var(--neon-green)] animate-pulse-glow" />
-                  LIVE
+                  NA ŻYWO
                 </span>
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-3">
@@ -636,10 +636,10 @@ export function NexusDashboard() {
                   <ToolChip icon={Sparkles} />
                   <ToolChip icon={Mic} />
                   <ToolChip icon={Globe} label="Internet" />
-                  <ToolChip icon={FileText} label="Files" />
-                  <ToolChip icon={Database} label="Memory" />
-                  <ToolChip icon={Puzzle} label="Plugins" />
-                  <ToolChip icon={Wrench} label="Tools" />
+                  <ToolChip icon={FileText} label="Pliki" />
+                  <ToolChip icon={Database} label="Pamięć" />
+                  <ToolChip icon={Puzzle} label="Wtyczki" />
+                  <ToolChip icon={Wrench} label="Narzędzia" />
                 </div>
                 <button className="group relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--neon-violet)]/50 bg-gradient-to-br from-[var(--neon-violet)]/40 to-[var(--neon-blue)]/30 transition hover:scale-110 hover:shadow-[0_0_30px_var(--neon-violet)]">
                   <span className="absolute inset-0 rounded-full animate-ring border border-[var(--neon-violet)]/60" />
@@ -648,7 +648,7 @@ export function NexusDashboard() {
               </div>
             </div>
             <div className="mt-2 text-center font-mono text-[10px] text-muted-foreground">
-              Press <span className="text-foreground">⌘K</span> for command palette
+              Naciśnij <span className="text-foreground">⌘K</span>, aby otworzyć paletę poleceń
             </div>
           </div>
         </main>
@@ -659,11 +659,11 @@ export function NexusDashboard() {
           <Panel>
             <PanelHeader
               icon={<Cpu className="h-3 w-3 text-[var(--neon-violet)]" />}
-              title="System Overview"
+              title="Przegląd Systemu"
               right={
                 <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[var(--neon-green)]">
                   <span className="h-1 w-1 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)] animate-pulse-glow" />
-                  Live
+                  Na żywo
                 </span>
               }
             />
@@ -674,22 +674,22 @@ export function NexusDashboard() {
           <Panel>
             <PanelHeader
               icon={<Triangle className="h-3 w-3 text-[var(--neon-violet)]" />}
-              title="Thought Process"
+              title="Proces Myślowy"
               right={
                 <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[var(--neon-green)]">
-                  Live <ArrowRight className="h-2.5 w-2.5" />
+                  Na żywo <ArrowRight className="h-2.5 w-2.5" />
                 </span>
               }
             />
             <div className="mb-3 font-mono text-[10px] text-muted-foreground">
-              Building your response...
+              Buduję odpowiedź...
             </div>
             <div className="space-y-2.5">
-              <ThoughtStep label="Understanding intent" pct={100} done />
-              <ThoughtStep label="Expanding knowledge" pct={100} done />
-              <ThoughtStep label="Finding connections" pct={87} active />
-              <ThoughtStep label="Generating response" pct={0} pending />
-              <ThoughtStep label="Optimizing output" pct={0} pending />
+              <ThoughtStep label="Rozumienie intencji" pct={100} done />
+              <ThoughtStep label="Rozszerzanie wiedzy" pct={100} done />
+              <ThoughtStep label="Wyszukiwanie powiązań" pct={87} active />
+              <ThoughtStep label="Generowanie odpowiedzi" pct={0} pending />
+              <ThoughtStep label="Optymalizacja wyniku" pct={0} pending />
             </div>
           </Panel>
 
@@ -697,17 +697,17 @@ export function NexusDashboard() {
           <Panel>
             <PanelHeader
               icon={<Workflow className="h-3 w-3 text-[var(--neon-violet)]" />}
-              title="Active Tasks"
-              right={<span className="font-mono text-[10px] text-muted-foreground">4 Running</span>}
+              title="Aktywne Zadania"
+              right={<span className="font-mono text-[10px] text-muted-foreground">4 W toku</span>}
             />
             <div className="space-y-2">
-              <TaskRow icon={Search} name="Market Research" pct={87} color="var(--neon-violet)" />
-              <TaskRow icon={BarChart3} name="Competitor Analysis" pct={62} color="var(--neon-pink)" />
-              <TaskRow icon={PenLine} name="Content Strategy" pct={43} color="var(--neon-blue)" />
-              <TaskRow icon={Code2} name="Code Optimization" pct={21} color="var(--neon-cyan)" />
+              <TaskRow icon={Search} name="Badanie rynku" pct={87} color="var(--neon-violet)" />
+              <TaskRow icon={BarChart3} name="Analiza konkurencji" pct={62} color="var(--neon-pink)" />
+              <TaskRow icon={PenLine} name="Strategia treści" pct={43} color="var(--neon-blue)" />
+              <TaskRow icon={Code2} name="Optymalizacja kodu" pct={21} color="var(--neon-cyan)" />
             </div>
             <button className="mt-3 flex w-full items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 font-mono text-[10px] text-muted-foreground transition hover:text-foreground">
-              View all tasks <ArrowRight className="h-3 w-3" />
+              Zobacz wszystkie zadania <ArrowRight className="h-3 w-3" />
             </button>
           </Panel>
 
@@ -719,12 +719,12 @@ export function NexusDashboard() {
                 <Focus className="relative h-5 w-5 text-[var(--neon-cyan)]" />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-semibold">Flow State</div>
-                <div className="font-mono text-[10px] text-muted-foreground">Deep Focus Mode</div>
+                <div className="text-sm font-semibold">Stan Przepływu</div>
+                <div className="font-mono text-[10px] text-muted-foreground">Tryb głębokiego skupienia</div>
               </div>
               <div className="text-right">
                 <div className="font-mono text-lg font-medium tracking-wider">02:35:42</div>
-                <div className="font-mono text-[9px] text-muted-foreground">Active Session</div>
+                <div className="font-mono text-[9px] text-muted-foreground">Aktywna sesja</div>
               </div>
               <Sparkline values={sessionSpark} color="var(--neon-cyan)" fill="var(--neon-cyan)" width={70} />
             </div>
