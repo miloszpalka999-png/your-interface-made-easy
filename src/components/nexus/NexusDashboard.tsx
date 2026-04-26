@@ -1,3 +1,4 @@
+import { useState } from "react";
 import neuralCore from "@/assets/neural-core.jpg";
 import { Panel, PanelHeader } from "./Panel";
 import { ProgressBar } from "./ProgressBar";
@@ -49,62 +50,104 @@ const modules: ModuleItem[] = [
 ];
 
 type AgentCard = {
+  id: string;
   icon: LucideIcon;
   name: string;
   task: string;
   progress: number;
   color: string;
   position: string;
+  status: "Running" | "Thinking" | "Idle";
+  uptime: string;
+  cpu: number;
+  memory: string;
+  lastAction: string;
 };
 
 const agents: AgentCard[] = [
   {
+    id: "researcher",
     icon: Search,
     name: "Researcher",
     task: "Analyzing market trends",
     progress: 87,
     color: "var(--neon-violet)",
     position: "top-[12%] left-[6%]",
+    status: "Running",
+    uptime: "01:42:18",
+    cpu: 34,
+    memory: "1.2 GB",
+    lastAction: "Indexed 248 sources",
   },
   {
+    id: "analyst",
     icon: PieChart,
     name: "Analyst",
     task: "Processing data",
     progress: 91,
     color: "var(--neon-blue)",
     position: "top-[14%] right-[6%]",
+    status: "Running",
+    uptime: "02:08:55",
+    cpu: 51,
+    memory: "2.4 GB",
+    lastAction: "Computed 12 metrics",
   },
   {
+    id: "coder",
     icon: Code2,
     name: "Coder",
     task: "Refactoring codebase",
     progress: 62,
     color: "var(--neon-cyan)",
     position: "top-[42%] left-[2%]",
+    status: "Thinking",
+    uptime: "00:54:03",
+    cpu: 22,
+    memory: "0.9 GB",
+    lastAction: "Edited 8 files",
   },
   {
+    id: "designer",
     icon: Palette,
     name: "Designer",
     task: "Generating visuals",
     progress: 78,
     color: "var(--neon-pink)",
     position: "top-[44%] right-[2%]",
+    status: "Running",
+    uptime: "01:11:42",
+    cpu: 47,
+    memory: "1.8 GB",
+    lastAction: "Rendered 5 frames",
   },
   {
+    id: "writer",
     icon: PenLine,
     name: "Writer",
     task: "Crafting content",
     progress: 43,
     color: "var(--neon-blue)",
     position: "bottom-[18%] left-[8%]",
+    status: "Thinking",
+    uptime: "00:23:11",
+    cpu: 18,
+    memory: "0.6 GB",
+    lastAction: "Drafted 3 sections",
   },
   {
+    id: "automator",
     icon: Bot,
     name: "Automator",
     task: "Running workflows",
     progress: 64,
     color: "var(--neon-amber)",
     position: "bottom-[10%] right-[8%]",
+    status: "Running",
+    uptime: "03:31:09",
+    cpu: 29,
+    memory: "1.1 GB",
+    lastAction: "Triggered 14 hooks",
   },
 ];
 
@@ -115,6 +158,17 @@ const networkSpark = [10, 14, 12, 18, 16, 22, 20, 26, 22, 30, 28, 34];
 const sessionSpark = [30, 42, 35, 50, 44, 58, 52, 64, 58, 70, 64, 78, 72, 84, 78, 90];
 
 export function NexusDashboard() {
+  const [hoverAgent, setHoverAgent] = useState<string | null>(null);
+  const [pinnedAgent, setPinnedAgent] = useState<string | null>("researcher");
+  const activeId = hoverAgent ?? pinnedAgent;
+  const activeAgent = agents.find((a) => a.id === activeId) ?? agents[0];
+
+  function cycleAgent() {
+    const idx = agents.findIndex((a) => a.id === pinnedAgent);
+    const next = agents[(idx + 1) % agents.length];
+    setPinnedAgent(next.id);
+  }
+
   return (
     <div className="relative min-h-screen overflow-hidden font-display text-foreground">
       <div className="aurora absolute inset-0" />
@@ -351,28 +405,113 @@ export function NexusDashboard() {
               </div>
             </div>
 
-            {/* Core image */}
+            {/* Core image — interactive */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative h-full w-full max-h-[560px] max-w-[720px]">
-                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,oklch(0.72_0.25_300/0.35),transparent_55%)] blur-2xl animate-pulse-glow" />
+              <button
+                type="button"
+                onClick={cycleAgent}
+                aria-label={`Cycle active agent. Current: ${activeAgent.name}`}
+                className="group relative h-full w-full max-h-[560px] max-w-[720px] cursor-pointer focus:outline-none"
+                style={{ ["--core-color" as string]: activeAgent.color }}
+              >
+                <div
+                  className="absolute inset-0 rounded-full blur-2xl animate-pulse-glow transition-all duration-700"
+                  style={{
+                    background: `radial-gradient(circle at center, ${activeAgent.color} 0%, transparent 55%)`,
+                    opacity: 0.45,
+                  }}
+                />
                 <img
                   src={neuralCore}
                   alt="Neural network core"
                   width={1536}
                   height={1280}
-                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none drop-shadow-[0_0_60px_oklch(0.72_0.25_300/0.45)]"
+                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-transform duration-700 group-hover:scale-[1.03]"
+                  style={{ filter: `drop-shadow(0 0 60px ${activeAgent.color})` }}
                 />
-              </div>
+
+                {/* Center HUD with active agent details */}
+                <div className="pointer-events-none absolute left-1/2 top-1/2 w-[220px] -translate-x-1/2 -translate-y-1/2">
+                  <div
+                    key={activeAgent.id}
+                    className="glass animate-rise rounded-2xl px-4 py-3 text-left backdrop-blur-xl"
+                    style={{
+                      borderColor: `color-mix(in oklab, ${activeAgent.color} 50%, transparent)`,
+                      boxShadow: `0 0 40px color-mix(in oklab, ${activeAgent.color} 35%, transparent)`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="h-2 w-2 rounded-full animate-pulse-glow"
+                        style={{ background: activeAgent.color, boxShadow: `0 0 10px ${activeAgent.color}` }}
+                      />
+                      <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
+                        Active Agent
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex items-baseline justify-between">
+                      <div className="text-base font-semibold" style={{ color: activeAgent.color }}>
+                        {activeAgent.name}
+                      </div>
+                      <span className="font-mono text-[10px] uppercase tracking-wider" style={{ color: activeAgent.color }}>
+                        {activeAgent.status}
+                      </span>
+                    </div>
+                    <div className="mt-1 truncate text-[11px] text-muted-foreground">{activeAgent.task}</div>
+                    <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[9px]">
+                      <Stat label="UPTIME" value={activeAgent.uptime} />
+                      <Stat label="CPU" value={`${activeAgent.cpu}%`} />
+                      <Stat label="MEM" value={activeAgent.memory} />
+                    </div>
+                    <div className="mt-2 flex items-center gap-2">
+                      <ProgressBar value={activeAgent.progress} color={activeAgent.color} />
+                      <span className="font-mono text-[10px] tabular-nums" style={{ color: activeAgent.color }}>
+                        {activeAgent.progress}%
+                      </span>
+                    </div>
+                    <div className="mt-2 truncate font-mono text-[9px] text-muted-foreground">
+                      › {activeAgent.lastAction}
+                    </div>
+                  </div>
+                  <div className="mt-2 text-center font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground/70">
+                    Click core to cycle ↻
+                  </div>
+                </div>
+
+                {/* Connection lines from core to active agent */}
+                <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="conn-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor={activeAgent.color} stopOpacity="0.9" />
+                      <stop offset="100%" stopColor={activeAgent.color} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </button>
             </div>
 
             {/* Agent cards */}
             {agents.map((a, idx) => {
               const Icon = a.icon;
+              const isActive = a.id === activeId;
               return (
-                <div
-                  key={a.name}
-                  className={`absolute ${a.position} w-[180px] md:w-[200px] glass magnetic rounded-xl px-3 py-2.5 animate-float animate-rise`}
-                  style={{ animationDelay: `${idx * 0.4}s, ${idx * 120}ms` }}
+                <button
+                  type="button"
+                  key={a.id}
+                  onMouseEnter={() => setHoverAgent(a.id)}
+                  onMouseLeave={() => setHoverAgent(null)}
+                  onClick={() => setPinnedAgent(a.id)}
+                  aria-pressed={pinnedAgent === a.id}
+                  className={`absolute ${a.position} w-[180px] text-left md:w-[200px] glass magnetic rounded-xl px-3 py-2.5 animate-float animate-rise transition-all duration-500 focus:outline-none ${
+                    isActive ? "z-20 scale-[1.06]" : "z-10"
+                  }`}
+                  style={{
+                    animationDelay: `${idx * 0.4}s, ${idx * 120}ms`,
+                    borderColor: isActive ? `color-mix(in oklab, ${a.color} 60%, transparent)` : undefined,
+                    boxShadow: isActive
+                      ? `0 0 0 1px ${a.color}, 0 0 36px color-mix(in oklab, ${a.color} 45%, transparent)`
+                      : undefined,
+                  }}
                 >
                   <div className="flex items-center gap-2">
                     <div
@@ -394,6 +533,12 @@ export function NexusDashboard() {
                         {a.task}
                       </div>
                     </div>
+                    {pinnedAgent === a.id && (
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: a.color, boxShadow: `0 0 8px ${a.color}` }}
+                      />
+                    )}
                   </div>
                   <div className="mt-2 flex items-center gap-2">
                     <Activity className="h-2.5 w-2.5 shrink-0 animate-ticker" style={{ color: a.color }} />
@@ -402,7 +547,7 @@ export function NexusDashboard() {
                       {a.progress}%
                     </span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -706,6 +851,17 @@ function RingProgress({ value }: { value: number }) {
       </svg>
       <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-semibold text-[var(--neon-cyan)]">
         {value}%
+      </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-1.5">
+      <div className="text-[8px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-0.5 truncate text-[11px] font-medium tabular-nums text-foreground">
+        {value}
       </div>
     </div>
   );
