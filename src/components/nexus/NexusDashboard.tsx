@@ -393,11 +393,51 @@ export function NexusDashboard() {
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className="absolute h-[280px] w-[280px] rounded-full border border-[var(--neon-violet)]/40 animate-ring"
-                  style={{ animationDelay: `${i * 1.2}s` }}
+                  className="absolute h-[280px] w-[280px] rounded-full border animate-ring"
+                  style={{
+                    borderColor: voiceActive
+                      ? "color-mix(in oklab, var(--neon-pink) 60%, transparent)"
+                      : "color-mix(in oklab, var(--neon-violet) 40%, transparent)",
+                    animationDelay: `${i * (voiceActive ? 0.5 : 1.2)}s`,
+                    animationDuration: voiceActive ? "1.8s" : "3.5s",
+                  }}
                 />
               ))}
             </div>
+
+            {/* Voice mode — circular waveform */}
+            {voiceActive && (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <svg width="360" height="360" viewBox="0 0 360 360" className="animate-slow-spin">
+                  {Array.from({ length: 64 }).map((_, i) => {
+                    const a = (i / 64) * Math.PI * 2;
+                    const baseR = 140;
+                    const amp = 8 + ((i * 13) % 22);
+                    const x1 = 180 + Math.cos(a) * baseR;
+                    const y1 = 180 + Math.sin(a) * baseR;
+                    const x2 = 180 + Math.cos(a) * (baseR + amp);
+                    const y2 = 180 + Math.sin(a) * (baseR + amp);
+                    return (
+                      <line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke="var(--neon-pink)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        style={{
+                          animation: `bar-pulse 0.${4 + (i % 6)}s ease-in-out infinite`,
+                          filter: "drop-shadow(0 0 4px var(--neon-pink))",
+                          opacity: 0.7,
+                        }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+            )}
 
             {/* Rotating orbital rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -405,11 +445,10 @@ export function NexusDashboard() {
                 <div className="absolute inset-0 rounded-full border border-dashed border-[var(--neon-violet)]/25 animate-slow-spin" />
                 <div className="absolute inset-8 rounded-full border border-[var(--neon-blue)]/20 animate-spin-rev" />
                 <div className="absolute inset-16 rounded-full border border-dashed border-[var(--neon-cyan)]/20 animate-spin-mid" />
-                {/* orbiting dots */}
                 {[
-                  { r: 210, color: "var(--neon-violet)", dur: "18s" },
-                  { r: 170, color: "var(--neon-pink)", dur: "13s" },
-                  { r: 130, color: "var(--neon-cyan)", dur: "9s" },
+                  { r: 210, color: "var(--neon-violet)", dur: 18 },
+                  { r: 170, color: "var(--neon-pink)", dur: 13 },
+                  { r: 130, color: "var(--neon-cyan)", dur: 9 },
                 ].map((o, i) => (
                   <span
                     key={i}
@@ -418,7 +457,7 @@ export function NexusDashboard() {
                       background: o.color,
                       boxShadow: `0 0 12px ${o.color}, 0 0 24px ${o.color}`,
                       ["--orbit-r" as string]: `${o.r}px`,
-                      animation: `orbit ${o.dur} linear infinite`,
+                      animation: `orbit ${voiceActive ? o.dur / 2.5 : o.dur}s linear infinite`,
                     }}
                   />
                 ))}
@@ -431,14 +470,15 @@ export function NexusDashboard() {
                 type="button"
                 onClick={cycleAgent}
                 aria-label={`Cycle active agent. Current: ${activeAgent.name}`}
-                className="group relative h-full w-full max-h-[560px] max-w-[720px] cursor-pointer focus:outline-none"
-                style={{ ["--core-color" as string]: activeAgent.color }}
+                className="group relative h-full w-full max-h-[520px] max-w-[680px] cursor-pointer focus:outline-none"
+                style={{ ["--core-color" as string]: voiceActive ? "var(--neon-pink)" : activeAgent.color }}
               >
                 <div
                   className="absolute inset-0 rounded-full blur-2xl animate-pulse-glow transition-all duration-700"
                   style={{
-                    background: `radial-gradient(circle at center, ${activeAgent.color} 0%, transparent 55%)`,
-                    opacity: 0.45,
+                    background: `radial-gradient(circle at center, ${voiceActive ? "var(--neon-pink)" : activeAgent.color} 0%, transparent 55%)`,
+                    opacity: voiceActive ? 0.7 : 0.45,
+                    animationDuration: voiceActive ? "1.4s" : "4s",
                   }}
                 />
                 <img
@@ -446,8 +486,12 @@ export function NexusDashboard() {
                   alt="Neural network core"
                   width={1536}
                   height={1280}
-                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-transform duration-700 group-hover:scale-[1.03]"
-                  style={{ filter: `drop-shadow(0 0 60px ${activeAgent.color})` }}
+                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-all duration-500 group-hover:scale-[1.03]"
+                  style={{
+                    filter: `drop-shadow(0 0 ${voiceActive ? 90 : 60}px ${voiceActive ? "var(--neon-pink)" : activeAgent.color})`,
+                    animationDuration: voiceActive ? "1.4s" : "4s",
+                    transform: voiceActive ? "scale(1.04)" : undefined,
+                  }}
                 />
 
                 {/* Center HUD with active agent details */}
