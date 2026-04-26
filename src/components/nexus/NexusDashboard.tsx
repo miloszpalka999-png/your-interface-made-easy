@@ -1,3 +1,4 @@
+import { useState } from "react";
 import neuralCore from "@/assets/neural-core.jpg";
 import { Panel, PanelHeader } from "./Panel";
 import { ProgressBar } from "./ProgressBar";
