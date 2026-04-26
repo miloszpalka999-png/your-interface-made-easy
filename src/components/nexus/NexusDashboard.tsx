@@ -555,13 +555,27 @@ export function NexusDashboard() {
   );
 }
 
-function QuickAction({ icon: Icon, title, sub }: { icon: LucideIcon; title: string; sub: string }) {
+function QuickAction({
+  icon: Icon,
+  title,
+  sub,
+  delay = 0,
+}: {
+  icon: LucideIcon;
+  title: string;
+  sub: string;
+  delay?: number;
+}) {
   return (
-    <button className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur transition hover:border-[var(--neon-violet)]/40 hover:bg-[var(--neon-violet)]/5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--neon-violet)]/30 to-[var(--neon-blue)]/20">
-        <Icon className="h-4 w-4 text-[var(--neon-violet)]" />
+    <button
+      style={{ animationDelay: `${delay}ms` }}
+      className="group magnetic animate-rise relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur transition hover:border-[var(--neon-violet)]/50 hover:bg-[var(--neon-violet)]/5 hover:shadow-[0_0_30px_oklch(0.72_0.25_300/0.35)]"
+    >
+      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[var(--neon-violet)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+      <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--neon-violet)]/30 to-[var(--neon-blue)]/20 group-hover:shadow-[0_0_16px_var(--neon-violet)]">
+        <Icon className="h-4 w-4 text-[var(--neon-violet)] transition group-hover:scale-110" />
       </div>
-      <div className="text-left">
+      <div className="relative text-left">
         <div className="text-sm font-medium leading-tight">{title}</div>
         <div className="font-mono text-[10px] text-muted-foreground">{sub}</div>
       </div>
