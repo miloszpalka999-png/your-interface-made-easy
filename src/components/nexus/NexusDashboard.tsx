@@ -161,6 +161,7 @@ const sessionSpark = [30, 42, 35, 50, 44, 58, 52, 64, 58, 70, 64, 78, 72, 84, 78
 export function NexusDashboard() {
   const [hoverAgent, setHoverAgent] = useState<string | null>(null);
   const [pinnedAgent, setPinnedAgent] = useState<string | null>("researcher");
+  const [voiceActive, setVoiceActive] = useState(false);
   const activeId = hoverAgent ?? pinnedAgent;
   const activeAgent = agents.find((a) => a.id === activeId) ?? agents[0];
 
@@ -171,13 +172,13 @@ export function NexusDashboard() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden font-display text-foreground">
+    <div className="relative h-screen overflow-hidden font-display text-foreground">
       <div className="aurora absolute inset-0" />
       <div className="ring-grid absolute inset-0 opacity-[0.45]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.75)_100%)]" />
       {/* floating particles */}
       <div className="pointer-events-none absolute inset-0">
-        {Array.from({ length: 22 }).map((_, i) => {
+        {Array.from({ length: 18 }).map((_, i) => {
           const top = (i * 53) % 100;
           const left = (i * 37) % 100;
           const size = 2 + (i % 3);
@@ -201,9 +202,9 @@ export function NexusDashboard() {
         })}
       </div>
 
-      <div className="relative z-10 mx-auto grid min-h-screen max-w-[1600px] grid-cols-12 gap-4 p-4 lg:p-6">
+      <div className="relative z-10 mx-auto grid h-screen max-w-[1600px] grid-cols-12 gap-3 p-3 lg:p-4">
         {/* LEFT COLUMN */}
-        <aside className="col-span-12 flex flex-col gap-4 lg:col-span-3 xl:col-span-2">
+        <aside className="col-span-12 flex flex-col gap-3 overflow-y-auto lg:col-span-3 xl:col-span-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Brand */}
           <div className="flex items-center gap-3 px-2 pt-2">
             <div className="relative flex h-10 w-10 items-center justify-center">
@@ -314,29 +315,47 @@ export function NexusDashboard() {
         </aside>
 
         {/* CENTER COLUMN */}
-        <main className="relative col-span-12 flex flex-col lg:col-span-6 xl:col-span-7">
+        <main className="relative col-span-12 flex min-h-0 flex-col lg:col-span-6 xl:col-span-7">
           {/* Top bar — listening + agent */}
-          <div className="flex items-start justify-between gap-4 px-2">
+          <div className="flex items-start justify-between gap-3 px-2">
             <div className="flex-1" />
-            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 backdrop-blur">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Listening...
+            <button
+              type="button"
+              onClick={() => setVoiceActive((v) => !v)}
+              aria-pressed={voiceActive}
+              className={`hidden md:flex items-center gap-2 rounded-full border px-4 py-1.5 backdrop-blur transition ${
+                voiceActive
+                  ? "border-[var(--neon-pink)]/60 bg-[var(--neon-pink)]/10 shadow-[0_0_20px_oklch(0.75_0.25_340/0.4)]"
+                  : "border-white/10 bg-white/[0.04] hover:border-[var(--neon-violet)]/40"
+              }`}
+            >
+              <Mic
+                className={`h-3 w-3 ${voiceActive ? "text-[var(--neon-pink)]" : "text-muted-foreground"}`}
+              />
+              <span
+                className={`font-mono text-[10px] uppercase tracking-[0.2em] ${
+                  voiceActive ? "text-[var(--neon-pink)]" : "text-muted-foreground"
+                }`}
+              >
+                {voiceActive ? "Listening" : "Voice off"}
               </span>
               <div className="flex h-4 items-center gap-[2px]">
                 {[3, 6, 4, 8, 5, 7, 4, 9, 6, 5, 7, 4].map((h, i) => (
                   <div
                     key={i}
-                    className="w-[2px] rounded-full bg-[var(--neon-violet)]"
+                    className="w-[2px] rounded-full"
                     style={{
-                      height: `${h * 1.5}px`,
-                      animation: `bar-pulse 1.${i}s ease-in-out infinite`,
-                      boxShadow: "0 0 4px var(--neon-violet)",
+                      height: `${(voiceActive ? h : 2) * 1.5}px`,
+                      background: voiceActive ? "var(--neon-pink)" : "oklch(0.5 0.05 280)",
+                      animation: voiceActive ? `bar-pulse 0.${4 + (i % 5)}s ease-in-out infinite` : "none",
+                      boxShadow: voiceActive ? "0 0 4px var(--neon-pink)" : "none",
+                      transition: "height .4s ease",
                     }}
                   />
                 ))}
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
+            </button>
+            <div className="hidden md:flex items-center gap-2">
               <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 backdrop-blur">
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)]" />
                 <div className="leading-tight">
@@ -351,34 +370,74 @@ export function NexusDashboard() {
           </div>
 
           {/* Greeting */}
-          <div className="mt-4 px-2 animate-rise">
-            <h1 className="font-display text-4xl font-light tracking-tight md:text-5xl xl:text-6xl neon-text">
+          <div className="mt-3 px-2 animate-rise">
+            <h1 className="font-display text-3xl font-light leading-tight tracking-tight md:text-4xl xl:text-5xl neon-text">
               Good Morning, <span className="text-gradient-brand font-medium">Creator</span>
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground md:text-base text-shimmer inline-block">
+            <p className="mt-1 text-xs text-muted-foreground md:text-sm text-shimmer inline-block">
               What shall we build today?
             </p>
           </div>
 
           {/* Quick actions */}
-          <div className="mt-5 flex flex-wrap gap-3 px-2">
+          <div className="mt-3 flex flex-wrap gap-2 px-2">
             <QuickAction icon={Sparkles} title="Smart Plan" sub="AI will build your plan" delay={100} />
             <QuickAction icon={Brain} title="Deep Research" sub="Get expert insights" delay={200} />
             <QuickAction icon={Lightbulb} title="Create Anything" sub="Bring ideas to life" delay={300} />
           </div>
 
           {/* Neural visualization with floating agents */}
-          <div className="relative mt-4 flex-1 min-h-[460px]">
+          <div className="relative mt-2 flex-1 min-h-0">
             {/* Concentric expanding rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className="absolute h-[280px] w-[280px] rounded-full border border-[var(--neon-violet)]/40 animate-ring"
-                  style={{ animationDelay: `${i * 1.2}s` }}
+                  className="absolute h-[280px] w-[280px] rounded-full border animate-ring"
+                  style={{
+                    borderColor: voiceActive
+                      ? "color-mix(in oklab, var(--neon-pink) 60%, transparent)"
+                      : "color-mix(in oklab, var(--neon-violet) 40%, transparent)",
+                    animationDelay: `${i * (voiceActive ? 0.5 : 1.2)}s`,
+                    animationDuration: voiceActive ? "1.8s" : "3.5s",
+                  }}
                 />
               ))}
             </div>
+
+            {/* Voice mode — circular waveform */}
+            {voiceActive && (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <svg width="360" height="360" viewBox="0 0 360 360" className="animate-slow-spin">
+                  {Array.from({ length: 64 }).map((_, i) => {
+                    const a = (i / 64) * Math.PI * 2;
+                    const baseR = 140;
+                    const amp = 8 + ((i * 13) % 22);
+                    const x1 = 180 + Math.cos(a) * baseR;
+                    const y1 = 180 + Math.sin(a) * baseR;
+                    const x2 = 180 + Math.cos(a) * (baseR + amp);
+                    const y2 = 180 + Math.sin(a) * (baseR + amp);
+                    return (
+                      <line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke="var(--neon-pink)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        style={{
+                          animation: `bar-pulse 0.${4 + (i % 6)}s ease-in-out infinite`,
+                          filter: "drop-shadow(0 0 4px var(--neon-pink))",
+                          opacity: 0.7,
+                        }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+            )}
 
             {/* Rotating orbital rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -386,11 +445,10 @@ export function NexusDashboard() {
                 <div className="absolute inset-0 rounded-full border border-dashed border-[var(--neon-violet)]/25 animate-slow-spin" />
                 <div className="absolute inset-8 rounded-full border border-[var(--neon-blue)]/20 animate-spin-rev" />
                 <div className="absolute inset-16 rounded-full border border-dashed border-[var(--neon-cyan)]/20 animate-spin-mid" />
-                {/* orbiting dots */}
                 {[
-                  { r: 210, color: "var(--neon-violet)", dur: "18s" },
-                  { r: 170, color: "var(--neon-pink)", dur: "13s" },
-                  { r: 130, color: "var(--neon-cyan)", dur: "9s" },
+                  { r: 210, color: "var(--neon-violet)", dur: 18 },
+                  { r: 170, color: "var(--neon-pink)", dur: 13 },
+                  { r: 130, color: "var(--neon-cyan)", dur: 9 },
                 ].map((o, i) => (
                   <span
                     key={i}
@@ -399,7 +457,7 @@ export function NexusDashboard() {
                       background: o.color,
                       boxShadow: `0 0 12px ${o.color}, 0 0 24px ${o.color}`,
                       ["--orbit-r" as string]: `${o.r}px`,
-                      animation: `orbit ${o.dur} linear infinite`,
+                      animation: `orbit ${voiceActive ? o.dur / 2.5 : o.dur}s linear infinite`,
                     }}
                   />
                 ))}
@@ -412,14 +470,15 @@ export function NexusDashboard() {
                 type="button"
                 onClick={cycleAgent}
                 aria-label={`Cycle active agent. Current: ${activeAgent.name}`}
-                className="group relative h-full w-full max-h-[560px] max-w-[720px] cursor-pointer focus:outline-none"
-                style={{ ["--core-color" as string]: activeAgent.color }}
+                className="group relative h-full w-full max-h-[520px] max-w-[680px] cursor-pointer focus:outline-none"
+                style={{ ["--core-color" as string]: voiceActive ? "var(--neon-pink)" : activeAgent.color }}
               >
                 <div
                   className="absolute inset-0 rounded-full blur-2xl animate-pulse-glow transition-all duration-700"
                   style={{
-                    background: `radial-gradient(circle at center, ${activeAgent.color} 0%, transparent 55%)`,
-                    opacity: 0.45,
+                    background: `radial-gradient(circle at center, ${voiceActive ? "var(--neon-pink)" : activeAgent.color} 0%, transparent 55%)`,
+                    opacity: voiceActive ? 0.7 : 0.45,
+                    animationDuration: voiceActive ? "1.4s" : "4s",
                   }}
                 />
                 <img
@@ -427,8 +486,12 @@ export function NexusDashboard() {
                   alt="Neural network core"
                   width={1536}
                   height={1280}
-                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-transform duration-700 group-hover:scale-[1.03]"
-                  style={{ filter: `drop-shadow(0 0 60px ${activeAgent.color})` }}
+                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-all duration-500 group-hover:scale-[1.03]"
+                  style={{
+                    filter: `drop-shadow(0 0 ${voiceActive ? 90 : 60}px ${voiceActive ? "var(--neon-pink)" : activeAgent.color})`,
+                    animationDuration: voiceActive ? "1.4s" : "4s",
+                    transform: voiceActive ? "scale(1.04)" : undefined,
+                  }}
                 />
 
                 {/* Center HUD with active agent details */}
@@ -591,7 +654,7 @@ export function NexusDashboard() {
         </main>
 
         {/* RIGHT COLUMN */}
-        <aside className="col-span-12 flex flex-col gap-4 lg:col-span-3">
+        <aside className="col-span-12 flex flex-col gap-3 overflow-y-auto lg:col-span-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* System overview */}
           <Panel>
             <PanelHeader
