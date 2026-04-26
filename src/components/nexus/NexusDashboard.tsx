@@ -117,8 +117,34 @@ const sessionSpark = [30, 42, 35, 50, 44, 58, 52, 64, 58, 70, 64, 78, 72, 84, 78
 export function NexusDashboard() {
   return (
     <div className="relative min-h-screen overflow-hidden font-display text-foreground">
-      <div className="ring-grid absolute inset-0 opacity-[0.35]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.7)_100%)]" />
+      <div className="aurora absolute inset-0" />
+      <div className="ring-grid absolute inset-0 opacity-[0.45]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.08_0.03_280/0.75)_100%)]" />
+      {/* floating particles */}
+      <div className="pointer-events-none absolute inset-0">
+        {Array.from({ length: 22 }).map((_, i) => {
+          const top = (i * 53) % 100;
+          const left = (i * 37) % 100;
+          const size = 2 + (i % 3);
+          const dur = 8 + (i % 7);
+          return (
+            <span
+              key={i}
+              className="absolute rounded-full bg-[var(--neon-violet)] animate-float"
+              style={{
+                top: `${top}%`,
+                left: `${left}%`,
+                width: size,
+                height: size,
+                opacity: 0.25 + ((i % 5) / 10),
+                boxShadow: `0 0 ${4 + size * 2}px var(--neon-violet)`,
+                animationDuration: `${dur}s`,
+                animationDelay: `${i * 0.3}s`,
+              }}
+            />
+          );
+        })}
+      </div>
 
       <div className="relative z-10 mx-auto grid min-h-screen max-w-[1600px] grid-cols-12 gap-4 p-4 lg:p-6">
         {/* LEFT COLUMN */}
@@ -270,56 +296,97 @@ export function NexusDashboard() {
           </div>
 
           {/* Greeting */}
-          <div className="mt-4 px-2">
-            <h1 className="font-display text-4xl font-light tracking-tight md:text-5xl xl:text-6xl">
+          <div className="mt-4 px-2 animate-rise">
+            <h1 className="font-display text-4xl font-light tracking-tight md:text-5xl xl:text-6xl neon-text">
               Good Morning, <span className="text-gradient-brand font-medium">Creator</span>
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground md:text-base">
+            <p className="mt-2 text-sm text-muted-foreground md:text-base text-shimmer inline-block">
               What shall we build today?
             </p>
           </div>
 
           {/* Quick actions */}
           <div className="mt-5 flex flex-wrap gap-3 px-2">
-            <QuickAction icon={Sparkles} title="Smart Plan" sub="AI will build your plan" />
-            <QuickAction icon={Brain} title="Deep Research" sub="Get expert insights" />
-            <QuickAction icon={Lightbulb} title="Create Anything" sub="Bring ideas to life" />
+            <QuickAction icon={Sparkles} title="Smart Plan" sub="AI will build your plan" delay={100} />
+            <QuickAction icon={Brain} title="Deep Research" sub="Get expert insights" delay={200} />
+            <QuickAction icon={Lightbulb} title="Create Anything" sub="Bring ideas to life" delay={300} />
           </div>
 
           {/* Neural visualization with floating agents */}
           <div className="relative mt-4 flex-1 min-h-[460px]">
+            {/* Concentric expanding rings */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="absolute h-[280px] w-[280px] rounded-full border border-[var(--neon-violet)]/40 animate-ring"
+                  style={{ animationDelay: `${i * 1.2}s` }}
+                />
+              ))}
+            </div>
+
+            {/* Rotating orbital rings */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="relative h-[420px] w-[420px]">
+                <div className="absolute inset-0 rounded-full border border-dashed border-[var(--neon-violet)]/25 animate-slow-spin" />
+                <div className="absolute inset-8 rounded-full border border-[var(--neon-blue)]/20 animate-spin-rev" />
+                <div className="absolute inset-16 rounded-full border border-dashed border-[var(--neon-cyan)]/20 animate-spin-mid" />
+                {/* orbiting dots */}
+                {[
+                  { r: 210, color: "var(--neon-violet)", dur: "18s" },
+                  { r: 170, color: "var(--neon-pink)", dur: "13s" },
+                  { r: 130, color: "var(--neon-cyan)", dur: "9s" },
+                ].map((o, i) => (
+                  <span
+                    key={i}
+                    className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                    style={{
+                      background: o.color,
+                      boxShadow: `0 0 12px ${o.color}, 0 0 24px ${o.color}`,
+                      ["--orbit-r" as string]: `${o.r}px`,
+                      animation: `orbit ${o.dur} linear infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
             {/* Core image */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative h-full w-full max-h-[560px] max-w-[720px]">
+                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,oklch(0.72_0.25_300/0.35),transparent_55%)] blur-2xl animate-pulse-glow" />
                 <img
                   src={neuralCore}
                   alt="Neural network core"
                   width={1536}
                   height={1280}
-                  className="h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none"
+                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none drop-shadow-[0_0_60px_oklch(0.72_0.25_300/0.45)]"
                 />
-                <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,var(--neon-violet)/0.25,transparent_60%)]" />
               </div>
             </div>
 
             {/* Agent cards */}
-            {agents.map((a) => {
+            {agents.map((a, idx) => {
               const Icon = a.icon;
               return (
                 <div
                   key={a.name}
-                  className={`absolute ${a.position} w-[180px] md:w-[200px] glass rounded-xl px-3 py-2.5 animate-float`}
-                  style={{ animationDelay: `${Math.random() * 3}s` }}
+                  className={`absolute ${a.position} w-[180px] md:w-[200px] glass magnetic rounded-xl px-3 py-2.5 animate-float animate-rise`}
+                  style={{ animationDelay: `${idx * 0.4}s, ${idx * 120}ms` }}
                 >
                   <div className="flex items-center gap-2">
                     <div
-                      className="flex h-6 w-6 items-center justify-center rounded-md"
+                      className="relative flex h-6 w-6 items-center justify-center rounded-md"
                       style={{
                         background: `linear-gradient(135deg, ${a.color}, oklch(0.4 0.15 280))`,
-                        boxShadow: `0 0 10px ${a.color}`,
+                        boxShadow: `0 0 14px ${a.color}`,
                       }}
                     >
                       <Icon className="h-3 w-3 text-white" />
+                      <span
+                        className="absolute -inset-1 rounded-md animate-ring"
+                        style={{ border: `1px solid ${a.color}`, animationDelay: `${idx * 0.5}s` }}
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-semibold leading-tight">{a.name}</div>
@@ -329,9 +396,9 @@ export function NexusDashboard() {
                     </div>
                   </div>
                   <div className="mt-2 flex items-center gap-2">
-                    <Activity className="h-2.5 w-2.5 shrink-0" style={{ color: a.color }} />
+                    <Activity className="h-2.5 w-2.5 shrink-0 animate-ticker" style={{ color: a.color }} />
                     <ProgressBar value={a.progress} color={a.color} />
-                    <span className="font-mono text-[10px] font-medium" style={{ color: a.color }}>
+                    <span className="font-mono text-[10px] font-medium tabular-nums" style={{ color: a.color }}>
                       {a.progress}%
                     </span>
                   </div>
@@ -342,13 +409,16 @@ export function NexusDashboard() {
 
           {/* Command bar */}
           <div className="mt-4 px-2">
-            <div className="glass rounded-2xl p-4">
+            <div className="glass conic-border rounded-2xl p-4 relative overflow-hidden">
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--neon-violet)] to-transparent animate-scan" />
               <div className="flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-[var(--neon-violet)] shadow-[0_0_10px_var(--neon-violet)] animate-pulse-glow" />
                 <input
                   className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground/70 focus:outline-none"
                   placeholder="Ask anything or give a command..."
                 />
-                <span className="hidden md:inline font-mono text-[10px] text-muted-foreground">
+                <span className="hidden md:flex items-center gap-1.5 font-mono text-[10px] text-[var(--neon-green)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-green)] shadow-[0_0_8px_var(--neon-green)] animate-pulse-glow" />
                   LIVE
                 </span>
               </div>
@@ -362,8 +432,9 @@ export function NexusDashboard() {
                   <ToolChip icon={Puzzle} label="Plugins" />
                   <ToolChip icon={Wrench} label="Tools" />
                 </div>
-                <button className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--neon-violet)]/40 bg-gradient-to-br from-[var(--neon-violet)]/30 to-[var(--neon-blue)]/20 transition hover:glow-violet">
-                  <ArrowRight className="h-4 w-4" />
+                <button className="group relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--neon-violet)]/50 bg-gradient-to-br from-[var(--neon-violet)]/40 to-[var(--neon-blue)]/30 transition hover:scale-110 hover:shadow-[0_0_30px_var(--neon-violet)]">
+                  <span className="absolute inset-0 rounded-full animate-ring border border-[var(--neon-violet)]/60" />
+                  <ArrowRight className="relative h-4 w-4 transition group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
@@ -484,13 +555,27 @@ export function NexusDashboard() {
   );
 }
 
-function QuickAction({ icon: Icon, title, sub }: { icon: LucideIcon; title: string; sub: string }) {
+function QuickAction({
+  icon: Icon,
+  title,
+  sub,
+  delay = 0,
+}: {
+  icon: LucideIcon;
+  title: string;
+  sub: string;
+  delay?: number;
+}) {
   return (
-    <button className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur transition hover:border-[var(--neon-violet)]/40 hover:bg-[var(--neon-violet)]/5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--neon-violet)]/30 to-[var(--neon-blue)]/20">
-        <Icon className="h-4 w-4 text-[var(--neon-violet)]" />
+    <button
+      style={{ animationDelay: `${delay}ms` }}
+      className="group magnetic animate-rise relative flex items-center gap-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur transition hover:border-[var(--neon-violet)]/50 hover:bg-[var(--neon-violet)]/5 hover:shadow-[0_0_30px_oklch(0.72_0.25_300/0.35)]"
+    >
+      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[var(--neon-violet)]/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+      <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--neon-violet)]/30 to-[var(--neon-blue)]/20 group-hover:shadow-[0_0_16px_var(--neon-violet)]">
+        <Icon className="h-4 w-4 text-[var(--neon-violet)] transition group-hover:scale-110" />
       </div>
-      <div className="text-left">
+      <div className="relative text-left">
         <div className="text-sm font-medium leading-tight">{title}</div>
         <div className="font-mono text-[10px] text-muted-foreground">{sub}</div>
       </div>
@@ -500,9 +585,9 @@ function QuickAction({ icon: Icon, title, sub }: { icon: LucideIcon; title: stri
 
 function ToolChip({ icon: Icon, label }: { icon: LucideIcon; label?: string }) {
   return (
-    <button className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition hover:border-[var(--neon-violet)]/40 hover:text-foreground">
-      <Icon className="h-3.5 w-3.5" />
-      {label && <span className="font-mono text-[11px]">{label}</span>}
+    <button className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground backdrop-blur transition hover:-translate-y-0.5 hover:border-[var(--neon-violet)]/50 hover:bg-[var(--neon-violet)]/10 hover:text-foreground hover:shadow-[0_0_18px_oklch(0.72_0.25_300/0.4)]">
+      <Icon className="h-3.5 w-3.5 transition group-hover:text-[var(--neon-violet)]" />
+      {label && <span className="font-mono text-[11px] tracking-wider">{label}</span>}
     </button>
   );
 }
