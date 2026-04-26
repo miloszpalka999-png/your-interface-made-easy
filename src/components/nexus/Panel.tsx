@@ -1,14 +1,22 @@
-import type { ReactNode } from "react";
+import type { ReactNode, MouseEvent } from "react";
 
 type Props = {
   children: ReactNode;
   className?: string;
+  delay?: number;
 };
 
-export function Panel({ children, className }: Props) {
+export function Panel({ children, className, delay = 0 }: Props) {
+  function onMove(e: MouseEvent<HTMLDivElement>) {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }
   return (
     <div
-      className={`glass rounded-2xl p-4 ${className ?? ""}`}
+      onMouseMove={onMove}
+      style={{ animationDelay: `${delay}ms` }}
+      className={`glass animate-rise rounded-2xl p-4 ${className ?? ""}`}
     >
       {children}
     </div>
