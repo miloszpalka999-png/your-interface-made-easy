@@ -598,41 +598,12 @@ export function NexusDashboard() {
               title="System Overview"
               right={
                 <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-[var(--neon-green)]">
-                  Live <ArrowRight className="h-2.5 w-2.5" />
+                  <span className="h-1 w-1 rounded-full bg-[var(--neon-green)] shadow-[0_0_6px_var(--neon-green)] animate-pulse-glow" />
+                  Live
                 </span>
               }
             />
-            <div className="space-y-3">
-              <SysRow icon={<Cpu className="h-3 w-3" />} label="CPU" value="23%">
-                <Sparkline values={cpuSpark} color="var(--neon-violet)" fill="var(--neon-violet)" width={100} />
-              </SysRow>
-              <SysRow icon={<MemoryStick className="h-3 w-3" />} label="Memory" value="7.2 GB">
-                <div className="flex h-3 items-center gap-[3px]">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-full w-3 rounded-sm"
-                      style={{
-                        background:
-                          i < 6
-                            ? "linear-gradient(180deg, var(--neon-violet), var(--neon-blue))"
-                            : "oklch(0.3 0.04 280)",
-                        boxShadow: i < 6 ? "0 0 6px var(--neon-violet)" : "none",
-                      }}
-                    />
-                  ))}
-                </div>
-              </SysRow>
-              <SysRow icon={<Activity className="h-3 w-3" />} label="GPU" value="41%">
-                <Sparkline values={gpuSpark} color="var(--neon-blue)" fill="var(--neon-blue)" width={100} />
-              </SysRow>
-              <SysRow icon={<HardDrive className="h-3 w-3" />} label="Storage" value="182 GB">
-                <ProgressBar value={62} color="var(--neon-blue)" />
-              </SysRow>
-              <SysRow icon={<NetworkIcon className="h-3 w-3" />} label="Network" value="68 Mbps">
-                <Sparkline values={networkSpark} color="var(--neon-green)" fill="var(--neon-green)" width={100} />
-              </SysRow>
-            </div>
+            <SystemMetrics />
           </Panel>
 
           {/* Thought process */}
