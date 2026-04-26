@@ -855,3 +855,14 @@ function RingProgress({ value }: { value: number }) {
     </div>
   );
 }
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-white/5 bg-white/[0.03] px-2 py-1.5">
+      <div className="text-[8px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-0.5 truncate text-[11px] font-medium tabular-nums text-foreground">
+        {value}
+      </div>
+    </div>
+  );
+}
