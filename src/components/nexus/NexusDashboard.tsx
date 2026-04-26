@@ -50,62 +50,104 @@ const modules: ModuleItem[] = [
 ];
 
 type AgentCard = {
+  id: string;
   icon: LucideIcon;
   name: string;
   task: string;
   progress: number;
   color: string;
   position: string;
+  status: "Running" | "Thinking" | "Idle";
+  uptime: string;
+  cpu: number;
+  memory: string;
+  lastAction: string;
 };
 
 const agents: AgentCard[] = [
   {
+    id: "researcher",
     icon: Search,
     name: "Researcher",
     task: "Analyzing market trends",
     progress: 87,
     color: "var(--neon-violet)",
     position: "top-[12%] left-[6%]",
+    status: "Running",
+    uptime: "01:42:18",
+    cpu: 34,
+    memory: "1.2 GB",
+    lastAction: "Indexed 248 sources",
   },
   {
+    id: "analyst",
     icon: PieChart,
     name: "Analyst",
     task: "Processing data",
     progress: 91,
     color: "var(--neon-blue)",
     position: "top-[14%] right-[6%]",
+    status: "Running",
+    uptime: "02:08:55",
+    cpu: 51,
+    memory: "2.4 GB",
+    lastAction: "Computed 12 metrics",
   },
   {
+    id: "coder",
     icon: Code2,
     name: "Coder",
     task: "Refactoring codebase",
     progress: 62,
     color: "var(--neon-cyan)",
     position: "top-[42%] left-[2%]",
+    status: "Thinking",
+    uptime: "00:54:03",
+    cpu: 22,
+    memory: "0.9 GB",
+    lastAction: "Edited 8 files",
   },
   {
+    id: "designer",
     icon: Palette,
     name: "Designer",
     task: "Generating visuals",
     progress: 78,
     color: "var(--neon-pink)",
     position: "top-[44%] right-[2%]",
+    status: "Running",
+    uptime: "01:11:42",
+    cpu: 47,
+    memory: "1.8 GB",
+    lastAction: "Rendered 5 frames",
   },
   {
+    id: "writer",
     icon: PenLine,
     name: "Writer",
     task: "Crafting content",
     progress: 43,
     color: "var(--neon-blue)",
     position: "bottom-[18%] left-[8%]",
+    status: "Thinking",
+    uptime: "00:23:11",
+    cpu: 18,
+    memory: "0.6 GB",
+    lastAction: "Drafted 3 sections",
   },
   {
+    id: "automator",
     icon: Bot,
     name: "Automator",
     task: "Running workflows",
     progress: 64,
     color: "var(--neon-amber)",
     position: "bottom-[10%] right-[8%]",
+    status: "Running",
+    uptime: "03:31:09",
+    cpu: 29,
+    memory: "1.1 GB",
+    lastAction: "Triggered 14 hooks",
   },
 ];
 
