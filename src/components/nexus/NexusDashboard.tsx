@@ -161,6 +161,7 @@ const sessionSpark = [30, 42, 35, 50, 44, 58, 52, 64, 58, 70, 64, 78, 72, 84, 78
 export function NexusDashboard() {
   const [hoverAgent, setHoverAgent] = useState<string | null>(null);
   const [pinnedAgent, setPinnedAgent] = useState<string | null>("researcher");
+  const [voiceActive, setVoiceActive] = useState(false);
   const activeId = hoverAgent ?? pinnedAgent;
   const activeAgent = agents.find((a) => a.id === activeId) ?? agents[0];
 
