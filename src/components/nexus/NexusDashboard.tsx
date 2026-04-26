@@ -585,9 +585,9 @@ function QuickAction({
 
 function ToolChip({ icon: Icon, label }: { icon: LucideIcon; label?: string }) {
   return (
-    <button className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition hover:border-[var(--neon-violet)]/40 hover:text-foreground">
-      <Icon className="h-3.5 w-3.5" />
-      {label && <span className="font-mono text-[11px]">{label}</span>}
+    <button className="group flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground backdrop-blur transition hover:-translate-y-0.5 hover:border-[var(--neon-violet)]/50 hover:bg-[var(--neon-violet)]/10 hover:text-foreground hover:shadow-[0_0_18px_oklch(0.72_0.25_300/0.4)]">
+      <Icon className="h-3.5 w-3.5 transition group-hover:text-[var(--neon-violet)]" />
+      {label && <span className="font-mono text-[11px] tracking-wider">{label}</span>}
     </button>
   );
 }
