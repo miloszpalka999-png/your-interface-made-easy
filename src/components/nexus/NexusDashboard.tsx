@@ -475,9 +475,7 @@ export function NexusDashboard() {
               </div>
             )}
 
-            {/* spacer to keep prior closing */}
-            {false && (
-              <div />
+
 
             {/* Rotating orbital rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
