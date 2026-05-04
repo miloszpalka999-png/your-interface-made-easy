@@ -2,21 +2,32 @@ import { useEffect, useRef } from "react";
 
 type Props = {
   voiceActive?: boolean;
-  accentColor?: string; // hex/oklch ignored — canvas uses internal palette
+  /** 0.2..2 — multiplies overall glow alpha */
+  glow?: number;
+  /** 0.2..1.5 — multiplies particle/tendril/spark counts */
+  density?: number;
+  /** 0.2..3 — multiplies animation speed */
+  speedMul?: number;
   className?: string;
 };
 
-/**
- * Canvas-rendered neural core (adapted from aurora-core/NeuralCore).
- * Transparent background so it can sit over the dashboard glow.
- */
-const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
+const NeuralCoreCanvas = ({
+  voiceActive = false,
+  glow = 1,
+  density = 1,
+  speedMul = 1,
+  className,
+}: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const voiceRef = useRef(voiceActive);
+  const glowRef = useRef(glow);
+  const densityRef = useRef(density);
+  const speedRef = useRef(speedMul);
 
-  useEffect(() => {
-    voiceRef.current = voiceActive;
-  }, [voiceActive]);
+  useEffect(() => { voiceRef.current = voiceActive; }, [voiceActive]);
+  useEffect(() => { glowRef.current = glow; }, [glow]);
+  useEffect(() => { densityRef.current = density; }, [density]);
+  useEffect(() => { speedRef.current = speedMul; }, [speedMul]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -127,15 +138,15 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
     };
     type Spark = { x: number; y: number; tx: number; ty: number; life: number; speed: number };
 
-    const PARTICLES = 700;
-    const TENDRILS = 16;
+    const MAX_PARTICLES = 1000;
+    const MAX_TENDRILS = 24;
     const VEINS = 8;
     const particles: Particle[] = [];
     const tendrils: Tendril[] = [];
     const sparks: Spark[] = [];
     let t = 0;
 
-    for (let i = 0; i < PARTICLES; i++) {
+    for (let i = 0; i < MAX_PARTICLES; i++) {
       particles.push({
         r: rand(40, 195),
         angle: rand(0, Math.PI * 2),
@@ -151,8 +162,8 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
             : `hsla(${rand(195, 245)},100%,72%,`,
       });
     }
-    for (let i = 0; i < TENDRILS; i++) {
-      const angle = (i / TENDRILS) * Math.PI * 2 + rand(-0.08, 0.08);
+    for (let i = 0; i < MAX_TENDRILS; i++) {
+      const angle = (i / MAX_TENDRILS) * Math.PI * 2 + rand(-0.08, 0.08);
       tendrils.push({
         angle,
         length: rand(200, 290),
@@ -168,9 +179,9 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
     const lobeAmp = 0.13;
     const tendrilWaveAmp = 1.4;
 
-    function drawBrainLobe(glow: number) {
+    function drawBrainLobe(glowA: number) {
       for (let pass = 0; pass < 3; pass++) {
-        const alpha = [0.05, 0.1, 0.18][pass] * glow;
+        const alpha = [0.05, 0.1, 0.18][pass] * glowA;
         const scale = [1.09, 1.04, 1][pass];
         ctx!.beginPath();
         const steps = 90;
@@ -199,8 +210,9 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
       }
     }
 
-    function drawTendrils(glow: number) {
-      for (let k = 0; k < TENDRILS; k++) {
+    function drawTendrils(glowA: number, count: number) {
+      const n = Math.min(count, tendrils.length);
+      for (let k = 0; k < n; k++) {
         const td = tendrils[k];
         const pts: [number, number][] = [];
         for (let i = 0; i < td.segments.length; i++) {
@@ -227,10 +239,10 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
           const my = (pts[i][1] + pts[i + 1][1]) / 2;
           ctx!.quadraticCurveTo(pts[i][0], pts[i][1], mx, my);
         }
-        const fade = (0.45 + 0.3 * Math.sin(t * 1.1 + td.phase)) * glow;
+        const fade = (0.45 + 0.3 * Math.sin(t * 1.1 + td.phase)) * glowA;
         const g = ctx!.createLinearGradient(cx, cy, pts[pts.length - 1][0], pts[pts.length - 1][1]);
-        g.addColorStop(0, `rgba(90,170,255,${fade})`);
-        g.addColorStop(0.5, `rgba(70,130,255,${fade * 0.55})`);
+        g.addColorStop(0, `rgba(120,190,255,${fade})`);
+        g.addColorStop(0.5, `rgba(90,150,255,${fade * 0.55})`);
         g.addColorStop(1, "rgba(50,90,210,0)");
         ctx!.strokeStyle = g;
         ctx!.lineWidth = td.width;
@@ -238,7 +250,7 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
       }
     }
 
-    function drawVeins(glow: number) {
+    function drawVeins(glowA: number) {
       for (let v = 0; v < VEINS; v++) {
         const a = (v / VEINS) * Math.PI * 2 + t * 0.045;
         ctx!.beginPath();
@@ -248,20 +260,20 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
           const wa = a + Math.sin(t * 0.45 + v + i * 0.45) * 0.28;
           ctx!.lineTo(cx + Math.cos(wa) * r, cy + Math.sin(wa) * r);
         }
-        const pulse = (0.35 + 0.28 * Math.sin(t * 2 + v)) * glow;
-        ctx!.strokeStyle = `rgba(90,190,255,${pulse})`;
+        const pulse = (0.35 + 0.28 * Math.sin(t * 2 + v)) * glowA;
+        ctx!.strokeStyle = `rgba(110,200,255,${pulse})`;
         ctx!.lineWidth = 1.4;
         ctx!.stroke();
       }
     }
 
-    function drawCore(glow: number, coreSize: number) {
+    function drawCore(glowA: number, coreSize: number) {
       for (let ring = 5; ring > 0; ring--) {
         const r = (ring * 13 + 4 * Math.sin(t * 3 + ring)) * coreSize;
-        const alpha = (6 - ring) * 0.038 * glow;
+        const alpha = (6 - ring) * 0.06 * glowA;
         const g = ctx!.createRadialGradient(cx, cy, 0, cx, cy, r);
-        g.addColorStop(0, `rgba(255,215,255,${alpha * 3})`);
-        g.addColorStop(0.4, `rgba(210,90,255,${alpha * 2})`);
+        g.addColorStop(0, `rgba(255,225,255,${alpha * 3})`);
+        g.addColorStop(0.4, `rgba(220,110,255,${alpha * 2})`);
         g.addColorStop(1, "rgba(130,50,240,0)");
         ctx!.beginPath();
         ctx!.arc(cx, cy, r, 0, Math.PI * 2);
@@ -270,15 +282,16 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
       }
     }
 
-    function updateAndDrawParticles(glow: number, speed: number) {
-      for (let i = 0; i < PARTICLES; i++) {
+    function updateAndDrawParticles(glowA: number, speed: number, count: number) {
+      const n = Math.min(count, particles.length);
+      for (let i = 0; i < n; i++) {
         const p = particles[i];
         p.angle += p.speed * speed;
         p.wobble += p.wobbleSpeed * speed;
         const wobR = p.r + Math.sin(p.wobble) * p.wobbleAmp;
         p.x = cx + Math.cos(p.angle) * wobR;
         p.y = cy + Math.sin(p.angle) * wobR;
-        const a = p.alpha * (0.4 + 0.6 * Math.abs(Math.sin(p.wobble * 0.65))) * glow;
+        const a = p.alpha * (0.4 + 0.6 * Math.abs(Math.sin(p.wobble * 0.65))) * glowA;
         ctx!.beginPath();
         ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx!.fillStyle = p.color + a + ")";
@@ -295,7 +308,7 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
       }
     }
 
-    function spawnAndDrawSparks(glow: number, speed: number, sparkRate: number) {
+    function spawnAndDrawSparks(glowA: number, speed: number, sparkRate: number) {
       if (Math.random() < sparkRate) {
         const a = rand(0, Math.PI * 2);
         const r = rand(50, 190);
@@ -318,12 +331,12 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
         ctx!.beginPath();
         ctx!.moveTo(sp.x, sp.y);
         ctx!.lineTo(x, y);
-        ctx!.strokeStyle = `rgba(195,140,255,${sp.life * 0.75 * glow})`;
-        ctx!.lineWidth = 0.7;
+        ctx!.strokeStyle = `rgba(215,160,255,${sp.life * 0.85 * glowA})`;
+        ctx!.lineWidth = 0.8;
         ctx!.stroke();
         ctx!.beginPath();
-        ctx!.arc(x, y, 1.2, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(255,195,255,${sp.life * glow})`;
+        ctx!.arc(x, y, 1.4, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(255,210,255,${sp.life * glowA})`;
         ctx!.fill();
       }
     }
@@ -331,18 +344,32 @@ const NeuralCoreCanvas = ({ voiceActive = false, className }: Props) => {
     let frameId = 0;
     const frame = () => {
       const v = voiceRef.current;
-      const glow = v ? 1.4 : 1;
-      const speed = v ? 2.2 : 1;
-      const sparkRate = v ? 0.5 : 0.22;
+      const baseGlow = (v ? 1.4 : 1) * glowRef.current;
+      const baseSpeed = (v ? 2.2 : 1) * speedRef.current;
+      const sparkRate = (v ? 0.5 : 0.22) * densityRef.current;
       const coreSize = v ? 1.25 : 1;
+      const partCount = Math.round(700 * densityRef.current);
+      const tendrilCount = Math.round(16 * Math.min(densityRef.current, 1.5));
+
       ctx.clearRect(0, 0, W, H);
-      drawTendrils(glow);
-      drawBrainLobe(glow);
-      drawVeins(glow);
-      updateAndDrawParticles(glow, speed);
-      spawnAndDrawSparks(glow, speed, sparkRate);
-      drawCore(glow, coreSize);
-      t += 0.016 * speed;
+      // Subtle dark backdrop so radial gradients pop like in source (still mostly transparent)
+      const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 380);
+      bg.addColorStop(0, "rgba(10,5,30,0.55)");
+      bg.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Additive blending for glowing layers
+      ctx.globalCompositeOperation = "lighter";
+      drawTendrils(baseGlow, tendrilCount);
+      drawBrainLobe(baseGlow);
+      drawVeins(baseGlow);
+      updateAndDrawParticles(baseGlow, baseSpeed, partCount);
+      spawnAndDrawSparks(baseGlow, baseSpeed, sparkRate);
+      drawCore(baseGlow, coreSize);
+      ctx.globalCompositeOperation = "source-over";
+
+      t += 0.016 * baseSpeed;
       frameId = requestAnimationFrame(frame);
     };
     frameId = requestAnimationFrame(frame);
