@@ -1,5 +1,5 @@
 import { useState } from "react";
-import neuralCore from "@/assets/neural-core.jpg";
+import NeuralCoreCanvas from "./NeuralCoreCanvas";
 import { Panel, PanelHeader } from "./Panel";
 import { SystemMetrics } from "./SystemMetrics";
 import { ProgressBar } from "./ProgressBar";
@@ -481,18 +481,16 @@ export function NexusDashboard() {
                     animationDuration: voiceActive ? "1.4s" : "4s",
                   }}
                 />
-                <img
-                  src={neuralCore}
-                  alt="Rdzeń sieci neuronowej"
-                  width={1536}
-                  height={1280}
-                  className="relative h-full w-full object-contain mix-blend-screen animate-pulse-glow select-none transition-all duration-500 group-hover:scale-[1.03]"
+                <div
+                  className="relative h-full w-full select-none transition-all duration-500 group-hover:scale-[1.03]"
                   style={{
                     filter: `drop-shadow(0 0 ${voiceActive ? 90 : 60}px ${voiceActive ? "var(--neon-pink)" : activeAgent.color})`,
-                    animationDuration: voiceActive ? "1.4s" : "4s",
                     transform: voiceActive ? "scale(1.04)" : undefined,
                   }}
-                />
+                  aria-label="Rdzeń sieci neuronowej"
+                >
+                  <NeuralCoreCanvas voiceActive={voiceActive} />
+                </div>
 
                 {/* Center HUD with active agent details */}
                 <div className="pointer-events-none absolute left-1/2 top-1/2 w-[220px] -translate-x-1/2 -translate-y-1/2">
