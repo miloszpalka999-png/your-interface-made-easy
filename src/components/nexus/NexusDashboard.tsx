@@ -162,6 +162,9 @@ export function NexusDashboard() {
   const [hoverAgent, setHoverAgent] = useState<string | null>(null);
   const [pinnedAgent, setPinnedAgent] = useState<string | null>("researcher");
   const [voiceActive, setVoiceActive] = useState(false);
+  const [coreGlow, setCoreGlow] = useState(1);
+  const [coreDensity, setCoreDensity] = useState(1);
+  const [coreSpeed, setCoreSpeed] = useState(1);
   const activeId = hoverAgent ?? pinnedAgent;
   const activeAgent = agents.find((a) => a.id === activeId) ?? agents[0];
 
@@ -439,6 +442,41 @@ export function NexusDashboard() {
               </div>
             )}
 
+            {/* Core controls — visible during voice mode */}
+            {voiceActive && (
+              <div className="absolute right-3 top-3 z-20 w-56 animate-rise rounded-xl border border-[var(--neon-pink)]/30 bg-black/55 p-3 backdrop-blur-xl shadow-[0_0_30px_oklch(0.75_0.25_340/0.25)]">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon-pink)] shadow-[0_0_6px_var(--neon-pink)]" />
+                  <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--neon-pink)]">
+                    Strojenie Rdzenia
+                  </span>
+                </div>
+                {[
+                  { label: "Blask", val: coreGlow, set: setCoreGlow, min: 0.2, max: 2, step: 0.05 },
+                  { label: "Gęstość", val: coreDensity, set: setCoreDensity, min: 0.2, max: 1.5, step: 0.05 },
+                  { label: "Prędkość", val: coreSpeed, set: setCoreSpeed, min: 0.2, max: 3, step: 0.05 },
+                ].map((s) => (
+                  <label key={s.label} className="mb-2 flex flex-col gap-1 last:mb-0">
+                    <div className="flex justify-between font-mono text-[10px] text-white/70">
+                      <span>{s.label}</span>
+                      <span className="tabular-nums text-white/40">{s.val.toFixed(2)}×</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={s.min}
+                      max={s.max}
+                      step={s.step}
+                      value={s.val}
+                      onChange={(e) => s.set(Number(e.target.value))}
+                      className="w-full accent-[var(--neon-pink)]"
+                    />
+                  </label>
+                ))}
+              </div>
+            )}
+
+
+
             {/* Rotating orbital rings */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="relative h-[420px] w-[420px]">
@@ -489,7 +527,12 @@ export function NexusDashboard() {
                   }}
                   aria-label="Rdzeń sieci neuronowej"
                 >
-                  <NeuralCoreCanvas voiceActive={voiceActive} />
+                  <NeuralCoreCanvas
+                    voiceActive={voiceActive}
+                    glow={coreGlow}
+                    density={coreDensity}
+                    speedMul={coreSpeed}
+                  />
                 </div>
 
                 {/* Center HUD with active agent details */}
