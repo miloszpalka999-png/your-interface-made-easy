@@ -162,6 +162,9 @@ export function NexusDashboard() {
   const [hoverAgent, setHoverAgent] = useState<string | null>(null);
   const [pinnedAgent, setPinnedAgent] = useState<string | null>("researcher");
   const [voiceActive, setVoiceActive] = useState(false);
+  const [coreGlow, setCoreGlow] = useState(1);
+  const [coreDensity, setCoreDensity] = useState(1);
+  const [coreSpeed, setCoreSpeed] = useState(1);
   const activeId = hoverAgent ?? pinnedAgent;
   const activeAgent = agents.find((a) => a.id === activeId) ?? agents[0];
 
@@ -489,7 +492,12 @@ export function NexusDashboard() {
                   }}
                   aria-label="Rdzeń sieci neuronowej"
                 >
-                  <NeuralCoreCanvas voiceActive={voiceActive} />
+                  <NeuralCoreCanvas
+                    voiceActive={voiceActive}
+                    glow={coreGlow}
+                    density={coreDensity}
+                    speedMul={coreSpeed}
+                  />
                 </div>
 
                 {/* Center HUD with active agent details */}
